@@ -1,6 +1,6 @@
 /*!
  * KeyboardJS
- * 
+ *
  * Copyright 2011, Robert William Hurst
  * Licenced under the BSD License.
  * See https://raw.github.com/RobertWHurst/KeyboardJS/master/license.txt
@@ -16,7 +16,7 @@
 }(this, function() {
 
 	//polyfills for ms's peice o' shit browsers
-	function bind(target, type, handler) { if (target.addEventListener) { target.addEventListener(type, handler, false); } else { target.attachEvent("on" + type, function(event) { return handler.call(target, event); }); } }
+	function bind(target, type, handler) { if (target.addEventListener) { target.addEventListener(type, handler, false); } else { target.attachEvent("on" + type, function(event) { return handler.call(target, event); }); } }
 	[].indexOf||(Array.prototype.indexOf=function(a,b,c){for(c=this.length,b=(c+~~b)%c;b<c&&(!(b in this)||this[b]!==a);b++);return b^c?b:-1;});
 
 	//locals
@@ -77,10 +77,15 @@
 	var keys = locals['us'],
 		activeKeys = [],
 		activeBindings = {},
-		keyBindingGroups = [];
+		keyBindingGroups = [],
+        enabled = true;
+
+    function setEnabled(newEnabled) { enabled = newEnabled; }
 
 	//adds keys to the active keys array
 	bind(document, "keydown", function(event) {
+
+        if (! enabled) return true;  // stop processing if disabled
 
 		//lookup the key pressed and save it to the active keys array
 		for (var key in keys) {
@@ -472,6 +477,7 @@
 			"axis": bindAxis
 		},
 		"activeKeys": getActiveKeys,
+		"enabled": setEnabled,
 		"unbind": {
 			"key": unbindKey
 		},
